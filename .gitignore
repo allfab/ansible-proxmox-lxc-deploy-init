@@ -1,0 +1,4 @@
+.vault-password
+galaxy/*
+authorized_keys
+*.pub

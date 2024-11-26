@@ -1,0 +1,26 @@
+---
+- name: CHARGEMENT DES VARIABLES
+  include_vars: defaults/main.yml
+
+- name: PRÉREQUIS/DÉPENDANCES SUR LE PVE
+  apt:
+    name:
+      - "python3-pip"
+      - "python3-proxmoxer>=1.1.0"
+    state: "present"
+  delegate_to: "{{ proxmox.pve.api.host }}"
+
+- name: TÉLÉCHARGEMENT DES MODÈLES DE CONTENEUR LXC
+  command: pveam download {{ proxmox.lxc.storage_template }} {{ item }}
+  loop:
+    - debian-11-standard_11.7-1_amd64.tar.zst
+    - debian-12-standard_12.7-1_amd64.tar.zst
+  delegate_to: "{{ proxmox.pve.api.host }}"
+
+# Infrastructure
+- name: DÉPLOIEMENT DU CONTENEUR LXC elephant
+  include_tasks: deployment.yml
+
+# Amorçage des conteneurs (SSH)
+- name: AMORÇAGE DU CONTENEUR LXC elephant
+  include_tasks: bootstrap.yml
