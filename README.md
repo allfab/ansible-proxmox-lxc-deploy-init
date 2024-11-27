@@ -83,6 +83,13 @@ secret:
         password: "my_proxmox_root_password%"
         token_id: "my_proxmox_token_id_user"
         token_secret: "my_proxmox_token_secret"
+
+  github:
+    api:
+      user: my_github_user
+      token: "my_github_token"
+      token_name: "my_github_token_name"
+      auth: yes
 ```
 
 Elles sont surchargées dans les fichiers de variables de rôle `roles/deployment/defaults/main.yml` et `roles/setup/defaults/main.yml` :
