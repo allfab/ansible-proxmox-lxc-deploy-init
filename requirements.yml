@@ -2,7 +2,6 @@
 roles:
   - src: grog.package
   - src: geerlingguy.docker
-  - src: ironicbadger.figurine
 
 collections:
   - name: community.general 
