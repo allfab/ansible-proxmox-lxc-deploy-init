@@ -4,3 +4,6 @@
 
 - name: INSTALLATION/CONFIGURATION DU MESSAGE OF THE DAY (MOTD)
   include_tasks: includes/motd.yml
+
+- name: INSTALLATION/CONFIGURATION DE zellij
+  include_tasks: includes/zellij.yml

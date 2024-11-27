@@ -1,0 +1,37 @@
+---
+- name: CHARGEMENT DES VARIABLES PAR DÉFAUT
+  include_vars: defaults/main.yml
+
+- name: ZELLIJ - OBTENTION DE LA DERNIÈRE VERSION
+  uri:
+    url: https://api.github.com/repos/zellij-org/zellij/releases/latest
+    url_username: "{{ secret.github.api.user | default (omit) }}"
+    url_password: "{{ secret.github.api.token | default (omit) }}"
+    return_content: true
+    force_basic_auth: "{{ secret.github.api.auth | default (omit) }}"
+  register: zellij_latest_release
+
+- name: ZELLIJ - DÉFINITION DE LA VERSION SI CE N'EST PAS LE CAS
+  set_fact:
+    zellij_version: "{{ zellij_latest_release.json.tag_name }}"
+
+- name: ZELLIJ - TÉLÉCHARGEMENT DU BINAIRE DE zellij
+  ansible.builtin.unarchive:
+    src: https://github.com/zellij-org/zellij/releases/download/{{ zellij_version }}/zellij-x86_64-unknown-linux-musl.tar.gz
+    dest: /usr/local/bin
+    extra_opts: [--strip-components=1]
+    remote_src: true
+    owner: root
+    group: root
+    mode: 0755
+  become: true
+
+# - name: INSTALLATION DU BINAIRE DANS LE DOSSIER /usr/local/bin
+#   ansible.builtin.copy:
+#     src: /tmp/zellij
+#     dest: /usr/local/bin/zellij
+#     owner: root
+#     group: root
+#     mode: 0755
+#     remote_src: true
+#     become: true
