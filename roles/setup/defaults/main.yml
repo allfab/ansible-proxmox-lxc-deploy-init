@@ -1,4 +1,7 @@
 ---
+locales:
+    - "fr_FR.UTF-8"
+    
 # MOTD
 figurine:  
   install_login_script: true
