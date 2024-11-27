@@ -5,7 +5,7 @@
   vars_files:
     - vars/vault.yml
   roles:
-    - role: proxmox-lxc-deploy-init/deployment
+    - role: deployment
 
 - hosts: myctlxc
   tags: setup
@@ -19,4 +19,4 @@
       upgrade: true
       cache_valid_time: 14400
   roles:
-    - role: proxmox-lxc-deploy-init/setup
+    - role: setup
