@@ -61,7 +61,7 @@ proxmox:
     tags:
       - myctlxc
       - prod
-    timezone: "{{ timezone }}"
+    timezone: "Europe/Paris"
     description: |
       <div align="center"><a href="https://perfecthomelab.allfabox.fr/" target="_blank" rel="noopener noreferrer"><img src="https://raw.githubusercontent.com/allfab/perfect-homelab/main/docs/assets/images/overview/logo-perfect-homelab-proxmox-thumbnail.png"/></a>
 

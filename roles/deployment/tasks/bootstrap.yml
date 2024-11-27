@@ -1,15 +1,15 @@
 ---
 - name: AMORÇAGE - AJOUT DU GROUPE UTILISATEUR PRINCIPAL
   ansible.builtin.command: lxc-attach "{{ proxmox.lxc.vmid }}" -- /bin/bash -c "groupadd -f -g {{ secret.user.me.gid }} {{ secret.user.me.name }}"
-  delegate_to: 192.168.10.5
+  delegate_to: "{{ proxmox.pve.api.host }}"
 
 - name: AMORÇAGE - AJOUT DE L'UTILISATEUR PRINCIPAL
   ansible.builtin.command: lxc-attach "{{ proxmox.lxc.vmid }}" -- /bin/bash -c "id -u {{ secret.user.me.name }} &>/dev/null || useradd --create-home --shell /bin/bash --uid {{ secret.user.me.uid }} --gid {{ secret.user.me.gid }} --groups sudo --comment '{{ secret.user.me.comment }}' {{ secret.user.me.name }}"
-  delegate_to: 192.168.10.5
+  delegate_to: "{{ proxmox.pve.api.host }}"
 
 - name: AMORÇAGE - AJOUT DU MOT DE PASSE DE L'UTILISATEUR PRINCIPAL
   ansible.builtin.command: lxc-attach "{{ proxmox.lxc.vmid }}" -- /bin/bash -c "printf '{{ secret.user.me.password }}\n{{ secret.user.me.password }}\n' | passwd {{ secret.user.me.name }}"
-  delegate_to: 192.168.10.5
+  delegate_to: "{{ proxmox.pve.api.host }}"
 
 - name: AMORÇAGE - COPIE DE LA CONFIGURATION ssh SUR LA MACHINE HÔTE
   template:
@@ -18,45 +18,45 @@
     owner: root
     group: root
     mode: 0644
-  delegate_to: 192.168.10.5
+  delegate_to: "{{ proxmox.pve.api.host }}"
 
 - name: AMORÇAGE - INSTALLATION DE LA CONFIGURATION ssh SUR LE CONTENEUR LXC
   ansible.builtin.command: pct push "{{ proxmox.lxc.vmid }}" /tmp/sshd_config /etc/ssh/sshd_config
-  delegate_to: 192.168.10.5
+  delegate_to: "{{ proxmox.pve.api.host }}"
 
 - name: AMORÇAGE - CRÉATION DU FICHIER authorized_keys AVEC LA CLÉ ssh SUR LA MACHINE HÔTE
   copy:
     dest: /tmp/authorized_keys
     content: |
-      "{{ secret.user.me.ssh.pubkey }}"
+      {{ secret.user.me.ssh.pubkey }}
     owner: root
     group: root
     mode: 0600
-  delegate_to: 192.168.10.5
+  delegate_to: "{{ proxmox.pve.api.host }}"
 
 - name: AMORÇAGE - CRÉATION DU RÉPERTOIRE DE CONFIGURATION ssh POUR L'UTILISATEUR PRINCIPAL
   ansible.builtin.command: lxc-attach "{{ proxmox.lxc.vmid }}" -- /bin/bash -c "mkdir -p /home/{{ secret.user.me.name }}/.ssh"
-  delegate_to: 192.168.10.5
+  delegate_to: "{{ proxmox.pve.api.host }}"
 
 - name: AMORÇAGE - PERMISSIONS DU RÉPERTOIRE DE CONFIGURATION ssh POUR L'UTILISATEUR PRINCIPAL
   ansible.builtin.command: lxc-attach "{{ proxmox.lxc.vmid }}" -- /bin/bash -c "chmod -Rf 0600 /home/{{ secret.user.me.name }}/.ssh"
-  delegate_to: 192.168.10.5
+  delegate_to: "{{ proxmox.pve.api.host }}"
 
 - name: AMORÇAGE - INSTALLATION DE LA CLÉ ssh SUR LES CONTENEURS LXC
   ansible.builtin.command: "pct push {{ proxmox.lxc.vmid }} /tmp/authorized_keys /home/{{ secret.user.me.name }}/.ssh/authorized_keys"
-  delegate_to: 192.168.10.5
+  delegate_to: "{{ proxmox.pve.api.host }}"
 
 - name: AMORÇAGE - CHANGEMENT DES PERMISSIONS DU RÉPERTOIRE .ssh DU FICHIER authorized_keys (CHMOD)
   ansible.builtin.command: lxc-attach "{{ proxmox.lxc.vmid }}" -- /bin/bash -c "chmod -Rf 700 /home/{{ secret.user.me.name }}/.ssh"
-  delegate_to: 192.168.10.5
+  delegate_to: "{{ proxmox.pve.api.host }}"
 
 - name: AMORÇAGE - CHANGEMENT DES PERMISSIONS DU RÉPERTOIRE .ssh DU FICHIER authorized_keys (CHOWN)
   ansible.builtin.command: lxc-attach "{{ proxmox.lxc.vmid }}" -- /bin/bash -c "chown -Rf {{ secret.user.me.uid }}:{{ secret.user.me.gid }} /home/{{ secret.user.me.name }}/.ssh"
-  delegate_to: 192.168.10.5
+  delegate_to: "{{ proxmox.pve.api.host }}"
 
 - name: AMORÇAGE - INSTALLATION DE sudo
   ansible.builtin.command: lxc-attach "{{ proxmox.lxc.vmid }}" -- /bin/bash -c "apt install sudo"
-  delegate_to: 192.168.10.5
+  delegate_to: "{{ proxmox.pve.api.host }}"
 
 - name: AMORÇAGE - COPIE DU FICHIER sudoers POUR L'UTILISATEUR PRINCIPAL
   template:
@@ -65,11 +65,11 @@
     owner: root
     group: root
     mode: 0600
-  delegate_to: 192.168.10.5
+  delegate_to: "{{ proxmox.pve.api.host }}"
 
 - name: AMORÇAGE - AJOUT DU FICHIER sudoers POUR L'UTILISATEUR PRINCIPAL
   ansible.builtin.command: "pct push {{ proxmox.lxc.vmid }} /tmp/sudoer /etc/sudoers.d/{{ secret.user.me.name }}"
-  delegate_to: 192.168.10.5
+  delegate_to: "{{ proxmox.pve.api.host }}"
 
 - name: AMORÇAGE - REDÉMARRAGE DU CONTENEUR LXC
   community.general.proxmox:

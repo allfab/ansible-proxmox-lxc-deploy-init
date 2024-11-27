@@ -35,7 +35,7 @@
     storage: "{{ proxmox.lxc.disk_volume.storage | default ('local-lvm') }}"
     swap: "{{ proxmox.lxc.swap | default ('512') }}"
     tags: "{{ proxmox.lxc.tags }}"
-    timezone: "{{ timezone }}"
+    # timezone: "{{ proxmox.lxc.timezone }}"
     unprivileged: "{{ proxmox.lxc.unprivileged | default ('true') }}"
     state: present
   delegate_to: "{{ proxmox.pve.api.host }}"
