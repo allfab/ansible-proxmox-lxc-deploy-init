@@ -147,7 +147,7 @@ proxmox:
     password: "{{ secret.user.lxc.ssh.password }}"
     pubkey: "{{ secret.user.me.ssh.pubkey }}"
     storage: "local-zfs"
-    storage_template: "iso-morpheus"
+    storage_template: "iso"
     swap: "512"
     tags:
       - myctlxc
