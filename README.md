@@ -143,7 +143,7 @@ proxmox:
     unprivileged: false       # true | false
     onboot: true
     startup: "order=99"
-    ostemplate: "iso-morpheus:vztmpl/debian-12-standard_12.7-1_amd64.tar.zst"
+    ostemplate: "iso:vztmpl/debian-12-standard_12.7-1_amd64.tar.zst"
     password: "{{ secret.user.lxc.ssh.password }}"
     pubkey: "{{ secret.user.me.ssh.pubkey }}"
     storage: "local-zfs"
