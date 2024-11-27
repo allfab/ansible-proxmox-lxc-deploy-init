@@ -18,6 +18,7 @@
 <p align="center">
   <a href="#pourquoi-ce-dépôt-">Pourquoi ce dépôt ?</a> •
   <a href="#pré-requis">Pré-requis</a> •
+  <a href="#variables-ansible">Variables Ansible</a> •
   <a href="#instructions-de-déploiement">Instructions de déploiement</a> •
   <a href="#coffre-fort-ansible">Coffre-fort Ansible</a> •
   <a href="#crédits">Crédits</a> •
@@ -38,6 +39,128 @@ J'utilise Ansible pour exécuter mon infrastructure et ce dépôt est ma contrib
  - [`just`](https://github.com/casey/just) :
     - Installation : `curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | sudo bash -s -- --to /usr/local/bin`
 
+
+# Variables Ansible
+
+Les variables `secrètes` sont répertoriées ci-dessous dans le fichier `vars/vault.yml` :
+```yaml
+# vars/vault.yml
+---
+secret:
+  ssh:
+    port: "22"
+
+  user:
+    me:
+      name: "myuser"
+      password: "myuserpassword"
+      uid: 1000
+      gid: 1000
+      group: "myuser"
+      groups: "sudo"
+      create_home: true
+      home: "/home/myuser"
+      system: false
+      comment: "My Comment"
+      ssh:
+        pubkey: "my ssh pubkey"
+    pve:
+      ssh:
+        user: "root"
+        pam: "root@pam"
+        password: "my_proxmox_root_password"
+    lxc:
+      ssh:
+        user: "root"
+        password: "my_container_root_password"
+    
+  proxmox:
+    pve:
+      api:
+        node: "my_node"
+        host: 192.168.100.100
+        user: "root@pam"
+        password: "my_proxmox_root_password%"
+        token_id: "my_proxmox_token_id_user"
+        token_secret: "my_proxmox_token_secret"
+```
+
+Elles sont surchargées dans les fichiers de variables de rôle `roles/deployment/defaults/main.yml` et `roles/setup/defaults/main.yml` :
+
+```yaml
+# roles/deployment/defaults/main.yml
+---
+ssh:
+  port: "{{ secret.ssh.port }}"
+
+user:
+  me:
+    name: "{{ secret.user.me.name }}"
+    password: "{{ secret.user.me.password }}"
+    uid: "{{ secret.user.me.uid }}"
+    gid: "{{ secret.user.me.gid }}"
+    group: "{{ secret.user.me.group }}"
+    groups: "{{ secret.user.me.groups }}"
+    create_home: true
+    home: "{{ secret.user.me.home }}"
+    system: false
+    comment: "{{ secret.user.me.comment }}"
+    ssh:
+      pubkey: "{{ secret.user.me.ssh.pubkey }}"
+  pve:
+    ssh:
+      user: "{{ secret.user.pve.ssh.user }}"
+      pam: "{{ secret.user.pve.ssh.pam }}"
+      password: "{{ secret.user.pve.ssh.password }}"
+  lxc:
+    ssh:
+      user: "{{ secret.user.lxc.ssh.user }}"
+      password: "{{ secret.user.lxc.ssh.user }}"
+  
+proxmox:
+  pve:
+    api:
+      node: "{{ secret.proxmox.pve.api.node }}"
+      host: "{{ secret.proxmox.pve.api.host }}"
+      user: "{{ secret.proxmox.pve.api.user }}"
+      password: "{{ secret.proxmox.pve.api.password }}"
+      token_id: "{{ secret.proxmox.pve.api.token_id }}"
+      token_secret: "{{ secret.proxmox.pve.api.token_secret }}"
+  lxc:
+    name: myctlxc
+    vmid: 199
+    cores: 2
+    cpus: "1"
+    cpuunits: "1000"
+    disk: "local-zfs:8"       # pve-storage-name:size-of-volume(GO)
+    nesting: 1
+    keyctl: 0
+    fuse: 0
+    memory: 1024
+    nameserver: 192.168.0.253
+    ip: 192.168.10.99
+    gw: 192.168.10.1
+    unprivileged: false       # true | false
+    onboot: true
+    startup: "order=99"
+    ostemplate: "iso-morpheus:vztmpl/debian-12-standard_12.7-1_amd64.tar.zst"
+    password: "{{ secret.user.lxc.ssh.password }}"
+    pubkey: "{{ secret.user.me.ssh.pubkey }}"
+    storage: "local-zfs"
+    storage_template: "iso-morpheus"
+    swap: "512"
+    tags:
+      - myctlxc
+      - prod
+    timezone: "{{ timezone }}"
+    description: |
+      <div align="center"><a href="https://perfecthomelab.allfabox.fr/" target="_blank" rel="noopener noreferrer"><img src="https://raw.githubusercontent.com/allfab/perfect-homelab/main/docs/assets/images/overview/logo-perfect-homelab-proxmox-thumbnail.png"/></a>
+
+      # My LXC Container
+
+      <a href="https://perfecthomelab.allfabox.fr/" target="_blank"><img src="https://img.shields.io/badge/Perfect_Homelab-526CFE?style=for-the-badge&logo=MaterialForMkDocs&logoColor=white" /></a><br />
+      </div>
+```
 
 # Instructions de déploiement
 
