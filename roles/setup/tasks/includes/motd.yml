@@ -1,0 +1,65 @@
+---
+- name: CHARGEMENT DES VARIABLES PAR DÉFAUT
+  include_vars: defaults/main.yml
+
+- name: RECUPÉRATION DE L'ARCHITECTURE DU SERVEUR POUR LES INSTALLATIONS À VENIR
+  vars:
+    arch_lut:
+      aarch64: arm64
+      armv6l: arm
+      armv7l: arm
+      x86_64: amd64
+  set_fact:
+    arch: "{{ arch_lut[ansible_architecture] | default(ansible_architecture) }}"
+
+- name: FIGURINE - OBTENTION DE LA DERNIÈRE VERSION
+  uri:
+    url: https://api.github.com/repos/arsham/figurine/releases/latest
+    url_username: "{{ secret.github.api.user | default (omit) }}"
+    url_password: "{{ secret.github.api.token | default (omit) }}"
+    return_content: true
+    force_basic_auth: "{{ secret.github.api.auth | default (omit) }}"
+  register: figurine_latest_release
+
+- name: FIGURINE - DÉFINITION DE LA VERSION EN COURS
+  set_fact:
+    figurine_version: "{{ figurine_latest_release.json.tag_name }}"
+
+- name: FIGURINE - TÉLÉCHARGEMENT DE LA VERSION SOUHAITÉE SUIVANT L'ARCHITECTURE DE LA MACHINE ET EXTRACTION DE L'EXECUTABLE figurine VERS LE RÉPERTOIRE D'INSTALLATION
+  unarchive:    
+    src: "https://github.com/arsham/figurine/releases/download/{{ figurine_version }}/figurine_linux_{{ arch }}_{{ figurine_version }}.tar.gz"
+    dest: /usr/local/bin
+    extra_opts: [--strip-components=1]
+    remote_src: true
+  become: true
+
+- name: FASTFETCH - OBTENTION DE LA DERNIÈRE VERSION
+  uri:
+    url: https://api.github.com/repos/fastfetch-cli/fastfetch/releases/latest
+    url_username: "{{ secret.github.api.user | default (omit) }}"
+    url_password: "{{ secret.github.api.token | default (omit) }}"
+    return_content: true
+    force_basic_auth: "{{ secret.github.api.auth | default (omit) }}"
+  register: fastfetch_latest_release
+
+- name: FASTFETCH - DÉFINITION DE LA VERSION SI CE N'EST PAS LE CAS
+  set_fact:
+    fastfetch_version: "{{ fastfetch_latest_release.json.tag_name }}"
+
+- name: FASTFETCH - TÉLÉCHARGEMENT DE LA VERSION SOUHAITÉE SUIVANT L'ARCHITECTURE DE LA MACHINE
+  get_url:
+    url: "https://github.com/fastfetch-cli/fastfetch/releases/download/{{ fastfetch_version }}/fastfetch-linux-{{ arch }}.deb"
+    dest: /tmp
+
+- name: FASTFETCH - INSATALLATION DU PAQUET fastfetch  
+  ansible.builtin.apt:
+    deb: /tmp/fastfetch-linux-{{ arch }}.deb
+  become: true
+
+- name: CONFIGURATION DU MOTD - MESSAGE OF THE DAY
+  template:
+    src: motd.sh.j2
+    dest: /etc/profile.d/motd.sh
+  become: true
+  when: figurine.install_login_script
+  

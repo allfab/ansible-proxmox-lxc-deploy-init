@@ -1,1 +1,6 @@
 ---
+# MOTD
+figurine:  
+  install_login_script: true
+  font: "3d.flf"
+  arch: amd64
