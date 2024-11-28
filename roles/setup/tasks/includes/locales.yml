@@ -1,0 +1,20 @@
+---
+- name: INSTALLATION DES PAQUETS PRÉREQUIS
+  ansible.builtin.command: apt install --reinstall --purge locales
+  become: true
+
+- name: DÉFINITION DES PARAMÈTRES RÉGIONAUX PAR DÉFAUT
+  lineinfile:
+    dest: "/etc/default/locale"
+    line: "{{ item }}"
+  with_items: 
+    - LC_ALL="fr_FR.UTF-8"
+    - LC_CTYPE="fr_FR.UTF-8"
+    - LC_MESSAGES="fr_FR.UTF-8"
+    - LANGUAGE="fr_FR.UTF-8"
+    # - LANG="fr_FR.UTF-8"
+  become: true
+    
+- name: RECONSTRUCTION DE LA BASE DE DONNÉES DES PARAMÈTRES RÉGIONAUX
+  command: dpkg-reconfigure locales -f noninteractive
+  become: true

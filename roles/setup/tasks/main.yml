@@ -3,12 +3,7 @@
   include_vars: defaults/main.yml
 
 - name: CONFIGURATION DES PARAMÈTRES RÉGIONAUX
-  locale_gen:
-    name: "{{ item }}"
-    state: present
-  with_items: "{{ locales }}"
-  register: locale_gen_result
-  become: true
+  include_tasks: includes/locales.yml
 
 - name: INSTALLATION/CONFIGURATION DU MESSAGE OF THE DAY (MOTD)
   include_tasks: includes/motd.yml
