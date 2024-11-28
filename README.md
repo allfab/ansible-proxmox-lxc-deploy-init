@@ -169,6 +169,19 @@ proxmox:
       </div>
 ```
 
+```yaml
+# roles/setup/defaults/main.yml
+---
+locales:
+    - "fr_FR.UTF-8"
+    
+# MOTD
+figurine:  
+  install_login_script: true
+  font: "3d.flf"
+  arch: amd64
+```
+
 # Instructions de déploiement
 
 - `just init-infra` :
