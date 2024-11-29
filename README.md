@@ -172,6 +172,7 @@ proxmox:
 ```yaml
 # roles/setup/defaults/main.yml
 ---
+---
 locales:
     - "fr_FR.UTF-8"
     
@@ -180,6 +181,38 @@ figurine:
   install_login_script: true
   font: "3d.flf"
   arch: amd64
+
+# PACKAGES
+package_list:
+  - name: bash-completion
+  - name: ca-certificates
+  - name: curl
+  - name: duf
+  - name: git
+  - name: htop
+  - name: iftop
+  - name: inxi
+  - name: iotop
+  - name: lm-sensors
+  - name: openssh-client
+  - name: openssh-server
+  - name: python3
+  - name: progress
+  - name: sudo
+  - name: tree
+  - name: vim
+  - name: wget
+
+bash_aliases:
+  - { alias: "ls", command: "ls --color=auto" }
+  - { alias: "ll", command: "ls -hl --color=auto" }
+  - { alias: "la", command: "ls -hal --color=auto" }
+  - { alias: "c", command: "clear" }
+  - { alias: "grep", command: "grep --color=auto" }
+  - { alias: "mkdir", command: "mkdir -pv" }
+  - { alias: "dcp", command: "docker compose up -d"}
+  - { alias: "dcd", command: "docker compose down"}
+  - { alias: "dtail", command: "docker logs -tf --tail='50' "}  
 ```
 
 # Instructions de déploiement
