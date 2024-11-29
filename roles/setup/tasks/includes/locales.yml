@@ -1,4 +1,7 @@
 ---
+- name: CHARGEMENT DES VARIABLES PAR DÉFAUT
+  include_vars: defaults/main.yml
+  
 - name: INSTALLATION DES PAQUETS PRÉREQUIS
   ansible.builtin.command: apt install --reinstall --purge locales
   become: true
