@@ -38,4 +38,5 @@ bash_aliases:
   - { alias: "mkdir", command: "mkdir -pv" }
   - { alias: "dcp", command: "docker compose up -d"}
   - { alias: "dcd", command: "docker compose down"}
-  - { alias: "dtail", command: "docker logs -tf --tail='50' "}  
+  - { alias: "dtail", command: "docker logs -tf --tail='50' "} 
+  - { alias: "z", command: "zellij" }
