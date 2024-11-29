@@ -1,0 +1,26 @@
+---
+- name: CHARGEMENT DES VARIABLES PAR DÉFAUT
+  include_vars: defaults/main.yml
+
+- name: "CONFIGURATION DES ALIAS Bash POUR L'UTILISATEUR {{ secret.user.me.name }}"
+  lineinfile:
+    dest: "{{ secret.user.me.home }}/.bash_aliases"
+    create: yes
+    group: "{{ secret.user.me.name }}"
+    line: 'alias {{ item.alias }}="{{ item.command }}"'
+    mode: 0644
+    owner: "{{ secret.user.me.name }}"
+    regexp: "^alias {{ item.alias }}="
+  with_items: "{{ bash_aliases }}"
+
+- name: CONFIGURATION DES ALIAS Bash POUR L'UTILISATEUR root
+  lineinfile:
+    dest: /root/.bash_aliases
+    create: yes
+    group: root
+    line: 'alias {{ item.alias }}="{{ item.command }}"'
+    mode: 0644
+    owner: root
+    regexp: "^alias {{ item.alias }}="
+  with_items: "{{ bash_aliases }}"
+  become: true
