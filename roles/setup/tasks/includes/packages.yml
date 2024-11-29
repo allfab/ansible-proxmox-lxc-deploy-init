@@ -1,0 +1,9 @@
+---
+- name: CHARGEMENT DES VARIABLES PAR DÉFAUT
+  include_vars: defaults/main.yml
+
+- name: INSTALLATION DES PAQUETS
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ package_list }}"
