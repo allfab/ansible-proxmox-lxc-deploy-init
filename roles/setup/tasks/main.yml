@@ -5,6 +5,12 @@
 - name: CONFIGURATION DES PARAMÈTRES RÉGIONAUX
   include_tasks: includes/locales.yml
 
+- name: CONFIGURATION DES ALIAS BASH
+  include_tasks: includes/bash-aliases.yml
+
+- name: INSTALLATION DES PAQUETS PAR DÉFAUT
+  include_tasks: includes/packages.yml
+
 - name: INSTALLATION/CONFIGURATION DU MESSAGE OF THE DAY (MOTD)
   include_tasks: includes/motd.yml
 
