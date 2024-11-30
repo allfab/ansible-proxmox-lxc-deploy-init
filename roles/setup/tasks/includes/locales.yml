@@ -17,6 +17,11 @@
     - LANGUAGE="fr_FR.UTF-8"
     # - LANG="fr_FR.UTF-8"
   become: true
+
+- name: RÉGÉNÉRATION DES PARAMETRES RÉGIONAUX
+  community.general.locale_gen:
+    name: "{{ locales }}"
+    state: present
     
 - name: RECONSTRUCTION DE LA BASE DE DONNÉES DES PARAMÈTRES RÉGIONAUX
   command: dpkg-reconfigure locales -f noninteractive
