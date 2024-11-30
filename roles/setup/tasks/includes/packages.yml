@@ -6,4 +6,4 @@
   ansible.builtin.package:
     name: "{{ item }}"
     state: present
-  with_items: "{{ package_list }}"
+  with_items: "{{ default_packages }}"
