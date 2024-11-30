@@ -9,25 +9,25 @@ figurine:
   arch: amd64
 
 # PACKAGES
-package_list:
-  - name: bash-completion
-  - name: ca-certificates
-  - name: curl
-  - name: duf
-  - name: git
-  - name: htop
-  - name: iftop
-  - name: inxi
-  - name: iotop
-  - name: lm-sensors
-  - name: openssh-client
-  - name: openssh-server
-  - name: python3
-  - name: progress
-  - name: sudo
-  - name: tree
-  - name: vim
-  - name: wget
+default_packages:
+  - bash-completion
+  - ca-certificates
+  - curl
+  - duf
+  - git
+  - htop
+  - iftop
+  - inxi
+  - iotop
+  - lm-sensors
+  - openssh-client
+  - openssh-server
+  - python3
+  - progress
+  - sudo
+  - tree
+  - vim
+  - wget
 
 bash_aliases:
   - { alias: "ls", command: "ls --color=auto" }
