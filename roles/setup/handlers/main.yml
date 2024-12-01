@@ -1,1 +1,5 @@
 ---
+- name: RECONSTRUCTION DE LA BASE DE DONNÉES DES PARAMÈTRES RÉGIONAUX
+  ansible.builtin.command: >
+    dpkg-reconfigure --frontend noninteractive locales
+  changed_when: true
