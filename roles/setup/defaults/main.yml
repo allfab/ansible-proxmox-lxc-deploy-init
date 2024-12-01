@@ -1,6 +1,7 @@
 ---
-locales:
-    - "fr_FR.UTF-8"
+locale:
+  short: "fr_FR"
+  long: "fr_FR.UTF-8"
     
 # MOTD
 figurine:  
