@@ -3,7 +3,16 @@
   include_vars: defaults/main.yml
   
 - name: INSTALLATION DES PAQUETS PRÉREQUIS
-  ansible.builtin.command: apt install --reinstall --purge locales
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - locales
+  become: true
+  notify: RECONSTRUCTION DE LA BASE DE DONNÉES DES PARAMÈTRES RÉGIONAUX
+
+- name: DÉFINITION DES PARAMÈTRES RÉGIONAUX
+  command: localedef -i {{ locale.short }} -c -f UTF-8 -A /usr/share/locale/locale.alias {{ locale.long }}
   become: true
 
 - name: DÉFINITION DES PARAMÈTRES RÉGIONAUX PAR DÉFAUT
@@ -15,14 +24,5 @@
     - LC_CTYPE="fr_FR.UTF-8"
     - LC_MESSAGES="fr_FR.UTF-8"
     - LANGUAGE="fr_FR.UTF-8"
-    # - LANG="fr_FR.UTF-8"
-  become: true
-
-- name: RÉGÉNÉRATION DES PARAMETRES RÉGIONAUX
-  community.general.locale_gen:
-    name: "{{ locales }}"
-    state: present
-    
-- name: RECONSTRUCTION DE LA BASE DE DONNÉES DES PARAMÈTRES RÉGIONAUX
-  command: dpkg-reconfigure locales -f noninteractive
+    - LANG="fr_FR.UTF-8"
   become: true
